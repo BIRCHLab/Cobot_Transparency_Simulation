@@ -1,0 +1,184 @@
+<mujoco model="ur5e">
+  <compiler angle="radian" meshdir="assets" autolimits="true" />
+
+  <option integrator="implicitfast" gravity='0 0 0'/>
+
+  <default>
+    <default class="ur5e">
+      <material specular="0.5" shininess="0.25"/>
+      <!-- <joint axis="0 1 0" range="-6.28319 6.28319" armature="0.1"/>
+      <general gaintype="fixed" biastype="none" ctrlrange="-150 150" forcerange="-150 150"/> -->
+      
+      <!-- <joint axis="0 1 0" range="-6.28319 6.28319" armature="0.652996613" damping = "5.0"/> -->
+      <joint axis="0 1 0" range="-6.28319 6.28319" armature="0.652996613" damping = "100.0"/>
+       
+
+      <!-- <general gaintype="fixed" biastype="none" ctrlrange="-5 5" forcerange="-500 500" forcelimited='true' gear="101"/> -->
+      <general gaintype="fixed" biastype="none" ctrlrange="-1.48519 1.48519" forcerange="-150 150" forcelimited='true' gear="101"/>
+      <default class="size3">
+        <default class="size3_limited">
+          <joint range="-3.1415 3.1415" armature="0.122738432"/>
+          <general ctrlrange="-1.48519 1.48519" forcerange="-150 150" forcelimited='true' gear="101"/>
+        </default>
+      </default>
+
+      <default class="size1">
+        <general forcerange="-28 28" ctrlrange="-0.277228 0.277228" gear="101"/>
+      </default>
+      <default class="visual">
+        <geom type="mesh" contype="0" conaffinity="0" group="2"/>
+      </default>
+      <default class="collision">
+        <geom type="capsule" group="0"/>
+        <default class="eef_collision">
+          <geom type="cylinder"/>
+        </default>
+      </default>
+      <site size="0.001" rgba="0.5 0.5 0.5 0.3" group="0"/>
+    </default>
+  </default>
+
+  <visual>
+    <global offwidth="1280" offheight="720"/>
+  </visual>
+
+  
+  <worldbody>
+    <camera name="coverpage" pos="-1.445 0.193 0.934" xyaxes="-0.337 -0.941 0.000 0.371 -0.133 0.919"/>
+    <camera name="right_iso" pos="-1.139 -1.346 0.717" xyaxes="0.709 -0.705 0.000 0.126 0.127 0.984"/>
+    <camera name="left_iso" pos="-1.217 0.521 0.786" xyaxes="-0.621 -0.784 -0.000 0.225 -0.178 0.958"/>
+    <camera name="front" pos="-1.257 -0.085 0.562" xyaxes="-0.153 -0.988 -0.000 0.143 -0.022 0.990"/>
+    <camera name='urdh_home' pos="2.349 -0.053 0.731" xyaxes="-0.024 1.000 0.000 -0.044 -0.001 0.999"/>
+    <camera name="arm_zoom" pos="-0.624 -0.749 0.453" xyaxes="0.340 -0.940 0.000 0.050 0.018 0.999"/>
+    <camera name='h2m' pos="-1.004 -1.067 1.020" xyaxes="0.425 -0.905 0.000 0.434 0.204 0.878"/>
+
+    <light name="spotlight" mode="targetbodycom" target="HUMAN" pos="0 -1 4"/>
+    <geom name="floor" type="plane" size="5 5 0.1" pos="0 0 -0.5" rgba="1 1 1 1" friction="1 0.005 0.0001"/>
+    <geom name="wall" type="box" size="0.1 2 2" pos="1 0 1" rgba="1 1 1 1" friction="1 0.005 0.0001"/>
+
+    <!-- <body name="HUMAN" pos="0.2 -0.8 0.6" quat='1 0 0 -0.4'> -->
+    <body name="HUMAN" pos="0 0 0.6" quat='1 0 0 0'>
+      <site name="Human_Body_Site" pos="0 0 0" quat='1 0 0 0'/>
+
+      <geom name="human_torso" type="box" size="0.02 0.14 0.21" pos=".01 0 -0.19" rgba='0 1 0 0.5' conaffinity="0" contype="0"/> 
+      <geom name="human_head" type="ellipsoid" size="0.11 0.12 .13" pos="0 0 0.15" rgba="0 1 0 0.5" conaffinity="0" contype="0"/> 
+    
+      <body name="clavical" pos="0 .015 0">
+        <joint name="hs_elevation" type="hinge" axis="1 0 0" stiffness = '40' damping="4.0" range="-.08 0.3" limited="true" solimplimit="0.09 0.9 0.09" />
+        <joint name="hs_protraction" type="hinge" axis="0 0 1" stiffness = '40' damping="4.0" range="-.05 0.2" limited="true" solimplimit="0.09 0.9 0.09" />
+
+        <geom name="hs" type="ellipsoid" size="0.030" fromto="0 0 0 0 0.17 0" rgba="0 1 0 1" 
+        mass="1" conaffinity="0" contype="0"/> 
+        
+        <body name="human_upper_arm" pos="0 0.17 0">
+          
+          <joint name="hs_abduction" type="hinge" axis="1 0 0" stiffness = '40' damping="4.0" range="-.5 1.5708" limited="true" solimplimit="0.09 0.9 0.09"/>
+          <joint name="hs_flexion" type="hinge" axis="0 1 0" stiffness = '40' damping="4.0" range="-0.872665 3.14159" limited="true" solimplimit="0.09 0.9 0.09"/>
+          <joint name="hs_rotation" type="hinge" axis="0 0 1" stiffness = '40' damping="4.0" range="-1.5708 1.5708" limited="true" solimplimit="0.09 0.9 0.09"/>
+
+          <!-- arm lengths taken from Anthropometry tables, 50Th percentile male -->
+          <geom name="human_upper_arm_geom" type="capsule" fromto="0 0 0  0 0 -0.34" size="0.04" 
+                rgba='0 1 0 1' mass="2.56" contype="1" conaffinity="1" solref="0.02 1" solimp="0.9 0.95 0.001" />
+
+          <!-- Elbow / forearm -->
+          <body name="human_forearm" pos="0 0 -0.34">
+            <joint name="h_elbow" type="hinge" axis="0 1 0" range="0 2.44346" stiffness = '7' damping="1.0" limited="true" solimplimit="0.09 0.9 0.09"/>
+            <joint name="h_wrist_rotation" type="hinge" axis="0 0 1" range="-0.7853 0.7853" stiffness = '7' damping="1.0" limited="true" armature='1' solimplimit="0.09 0.9 0.09"/>
+
+            <geom name="human_forearm_geom" type="capsule" fromto="0 0 0 0 0 -0.27" size="0.035" rgba='0 1 0 1'
+                  mass="1.39" contype="0" conaffinity="0" solref="0.02 1" solimp="0.9 0.95 0.001"/>
+
+            <geom name="human_hand_geom" type="box" size="0.029 .009 0.06" pos="-0.003 0 -0.305" rgba='0 1 0 1' 
+                  mass="0" contype="1" conaffinity="1" solref="0.02 1" solimp="0.9 0.95 0.001"/>
+
+            <geom name="human_hand_point_mass" type="ellipsoid" size="0.001 0.001 0.001" pos="-0.003 0 -0.305" rgba='0 1 0 0' 
+                  mass="0.52" contype="1" conaffinity="1" solref="0.02 1" solimp="0.9 0.95 0.001"/>
+
+            <geom name="hand_side" type="capsule" size="0.009" fromto=".027 0 -0.27 0.027 0 -0.365" rgba='0 1 0 1' mass="0"
+              contype="1" conaffinity="1" solref="0.02 1" solimp="0.9 0.95 0.001"/>
+
+            <geom name="thumb_side" type="capsule" size="0.009" fromto="-.030 0 -0.27 -0.030 0 -0.365" rgba='0 1 0 1' mass="0"
+              contype="1" conaffinity="1" solref="0.02 1" solimp="0.9 0.95 0.001"/>
+
+            <geom name="knuckles" type="capsule" size="0.009" fromto=".027 0 -0.365 -0.027 0 -0.365" rgba='0 1 0 1' mass="0"
+              contype="1" conaffinity="1" solref="0.02 1" solimp="0.9 0.95 0.001"/>
+
+            <geom name="pinky" type="capsule" size="0.008" fromto=".025 0 -0.33 .025 0 -0.44" rgba='0 1 0 1' mass="0"
+              contype="1" conaffinity="1" solref="0.02 1" solimp="0.9 0.95 0.001"/>
+
+            <geom name="ring" type="capsule" size="0.009" fromto=".010 0 -0.33 .010 0 -0.45" rgba='0 1 0 1' mass="0"
+              contype="1" conaffinity="1" solref="0.02 1" solimp="0.9 0.95 0.001"/>
+
+            <geom name="middle" type="capsule" size="0.009" fromto="-.005 0 -0.33 -.005 0 -0.46" rgba='0 1 0 1' mass="0"
+              contype="1" conaffinity="1" solref="0.02 1" solimp="0.9 0.95 0.001"/>
+
+            <geom name="index" type="capsule" size="0.009" fromto="-.020 0 -0.33 -.020 0 -0.45" rgba='0 1 0 1' mass="0"
+              contype="1" conaffinity="1" solref="0.02 1" solimp="0.9 0.95 0.001"/>
+
+            <geom name="thumb" type="capsule" size="0.011" fromto="-.033 0 -0.31 -.04 0 -0.40" rgba='0 1 0 1' mass="0"
+              contype="1" conaffinity="1" solref="0.02 1" solimp="0.9 0.95 0.001"/>
+
+            <geom name="h_wrist_cuff" type="cylinder" size="0.036 0.03" pos="0 0 -.20" rgba='0 1 1 1' mass="0.0"
+              contype="0" conaffinity="0" solref="0.02 1" solimp="0.9 0.95 0.001"/>
+
+            <geom name="h_wrist_attachment" type="cylinder" size="0.025 0.005" quat="1 0 -1 0" pos=".036 0 -.20" rgba='0 1 1 1' mass="0.0" contype="0" conaffinity="0"
+              solref="0.02 1" solimp="0.9 0.95 0.001"/>
+
+              <body name="temp" pos=".036 0 -.2" quat='1 0 -1 0'>
+
+                <body name="human_arm_attachment_body" pos="0 0 0" quat='1 0 0 1'>
+                  <site name="human_arm_attachment_site" pos="0 0 0" size="0.01" rgba='1 0 0 1' />
+                </body>
+              </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <equality>
+    <!-- <weld name='EE_arm_weld' 
+          body1="interface_attachment_body" 
+          body2="human_arm_attachment_body" 
+          relpose="0 0 0 1 0 0 0"
+          solref="0.03 1" 
+          solimp="0.1 0.9 0.001 0.1 1"/> -->
+
+    <!-- <weld name='EE_arm_weld' 
+          body1="interface_attachment_body" 
+          body2="human_arm_attachment_body" 
+          relpose="0 0 0 1 0 0 0"/> -->
+  </equality>
+          <!-- solref="0.01 1"  -->
+
+  <actuator>
+
+
+    <!-- give addendum about comparable to shoulder -->
+    <general name="hs_elevation" joint="hs_elevation" ctrlrange="-50 50" forcerange='-50 50' forcelimited='true' gear="1"/>
+    <general name="hs_protraction" joint="hs_protraction" ctrlrange="-50 50" forcerange='-50 50' forcelimited='true' gear="1"/>
+
+    <!-- For male (Mean values from Hogrel et al.) -->
+    <general name="hs_abduction" joint="hs_abduction" ctrlrange="-51 51" forcerange='-51 51' forcelimited='true' gear="1"/>
+    <general name="hs_flexion" joint="hs_flexion" ctrlrange="-55.0 55.0" forcerange='-55.0 55.0' forcelimited='true' gear="1"/>
+    <general name="hs_rotation" joint="hs_rotation" ctrlrange="-41 41" forcerange='-41 41' forcelimited='true' gear="1"/>
+    <general name="h_elbow_flexion" joint="h_elbow" ctrlrange="-44 71" forcerange='-44 71' forcelimited='true' gear='1'/>
+    
+    <!-- Sullivan 2001 -->
+    <general name="h_wrist_rotation" joint="h_wrist_rotation" ctrlrange="-13.5 16.2" forcerange='-13.5 16.2' forcelimited='true' gear='1'/>
+  </actuator>
+
+  <sensor>
+    <!-- <force site="distal_interface_site"/> -->
+    <!-- <torque site="distal_interface_site"/> -->
+    <!-- <velocimeter site="distal_interface_site"/> -->
+    <!-- <gyro site="distal_interface_site"/> -->
+  </sensor>
+
+  <keyframe>
+    <!-- <key name="home" qpos="-1.5708 0 0 0 -1.5708 1.5708 0 0 0 0.2708 0 1.3 0" ctrl="0 0 0 0 0 0 0 0 0 0 0 0 0"/> -->
+    <key name="home" qpos="0 0 0 0.2708 0 1.3 0" ctrl="0 0 0 0 0 0 0"/>
+    <!-- <key name="home" qpos="-1.5708 0 -1.5000 -1.6416 -1.5708 1.5708 0 0 0 0.2708 0 1.3 0" ctrl="0 0 0 0 0 0 0 0 0 0 0 0 0"/> -->
+  </keyframe>
+
+</mujoco>

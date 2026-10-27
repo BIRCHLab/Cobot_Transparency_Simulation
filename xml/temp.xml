@@ -1,0 +1,89 @@
+<mujoco model="ur5e">
+  <compiler angle="radian" meshdir="assets" autolimits="true" />
+
+  <option integrator="implicitfast" gravity='0 0 0'/>
+
+  <default>
+    <default class="ur5e">
+      <material specular="0.5" shininess="0.25"/>
+      <!-- <joint axis="0 1 0" range="-6.28319 6.28319" armature="0.1"/>
+      <general gaintype="fixed" biastype="none" ctrlrange="-150 150" forcerange="-150 150"/> -->
+      
+      <joint axis="0 1 0" range="-6.28319 6.28319" armature="0.652996613"/>
+       
+
+      <general gaintype="fixed" biastype="none" ctrlrange="-1.48519 1.48519" forcerange="-150 150" forcelimited='true' gear="101"/>
+      <default class="size3">
+        <default class="size3_limited">
+          <joint range="-3.1415 3.1415" armature="0.122738432"/>
+          <general ctrlrange="-1.48519 1.48519" forcerange="-150 150" forcelimited='true' gear="101"/>
+        </default>
+      </default>
+
+      <default class="size1">
+        <general forcerange="-28 28" ctrlrange="-0.277228 0.277228" gear="101"/>
+      </default>
+      <default class="visual">
+        <geom type="mesh" contype="0" conaffinity="0" group="2"/>
+      </default>
+      <default class="collision">
+        <geom type="capsule" group="0"/>
+        <default class="eef_collision">
+          <geom type="cylinder"/>
+        </default>
+      </default>
+      <site size="0.001" rgba="0.5 0.5 0.5 0.3" group="0"/>
+    </default>
+  </default>
+
+  <visual>
+    <global offwidth="1280" offheight="720"/>
+  </visual>
+
+  <asset>
+    <material class="ur5e" name="black" rgba="0.033 0.033 0.033 1"/>
+    <material class="ur5e" name="jointgray" rgba="0.278 0.278 0.278 1"/>
+    <material class="ur5e" name="linkgray" rgba="0.82 0.82 0.82 1"/>
+    <material class="ur5e" name="urblue" rgba="0.49 0.678 0.8 1"/>
+
+    <mesh file="base_0.obj"/>
+    <mesh file="base_1.obj"/>
+    <mesh file="shoulder_0.obj"/>
+    <mesh file="shoulder_1.obj"/>
+    <mesh file="shoulder_2.obj"/>
+    <mesh file="upperarm_0.obj"/>
+    <mesh file="upperarm_1.obj"/>
+    <mesh file="upperarm_2.obj"/>
+    <mesh file="upperarm_3.obj"/>
+    <mesh file="forearm_0.obj"/>
+    <mesh file="forearm_1.obj"/>
+    <mesh file="forearm_2.obj"/>
+    <mesh file="forearm_3.obj"/>
+    <mesh file="wrist1_0.obj"/>
+    <mesh file="wrist1_1.obj"/>
+    <mesh file="wrist1_2.obj"/>
+    <mesh file="wrist2_0.obj"/>
+    <mesh file="wrist2_1.obj"/>
+    <mesh file="wrist2_2.obj"/>
+    <mesh file="wrist3.obj"/>
+  </asset>
+
+  <worldbody>
+    <camera name="isometric" pos="-1.762 0.029 1.182" xyaxes="-0.230 -0.973 0.000 0.460 -0.109 0.881"/>
+
+
+    <geom name="floor" type="plane" size="5 5 0.1" pos="0 0 -0.5" rgba="1 1 1 1" friction="1 0.005 0.0001"/>
+    <geom name="wall" type="box" size="0.1 2 2" pos="1 0 1" rgba="1 1 1 1" friction="1 0.005 0.0001"/>
+    <geom name="pedestal" type='cylinder' fromto='0 0 0 0 0 -0.5' size='.1' rgba="1 1 1 1"/>
+
+    <body name="base" pos="0 1 0" quat="1 0 0 0" childclass="ur5e">
+      <inertial mass="4.0" pos="0 0 0" diaginertia="0.00443333156 0.00443333156 0.0072" quat="0 0 0 1"/>
+      <geom name="base_0" mesh="base_0" material="black" class="visual" quat="0 0 0 1"/>
+      <geom name="base_1"mesh="base_1" material="jointgray" class="visual" quat="0 0 0 1"/>
+
+
+    </body>
+  </worldbody>
+
+
+</mujoco>

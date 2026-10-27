@@ -1,0 +1,9 @@
+name: simbox
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - ipykernel
+  - scipy
+  - pythonnet
+prefix: C:\Users\lahmanjh\.conda\envs\simbox
