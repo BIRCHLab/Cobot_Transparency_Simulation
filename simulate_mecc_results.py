@@ -171,7 +171,7 @@ backdrivable_scalar = 1
 
 
 dt = 0.001                # simulation timestep
-total_time = 2           # seconds
+total_time = 5           # seconds
 buffer_time = 1
 n_steps = int(total_time / dt)
 time_vec = np.linspace(0,total_time,n_steps)
