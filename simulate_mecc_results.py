@@ -191,12 +191,6 @@ human_control_gains = {
                         "ki":0*np.ones(7),
                         }
 
-human_stiffness = False
-human_stiffness_gains = {
-                        "kp":np.array([50, 50, 50, 50, 50, 50, 50]),
-                        "kd":0*np.ones(7),
-                        "ki":0*np.ones(7),
-                        }
 
 linear_d = 1
 ratio = 1/(4*np.pi*.2)
@@ -277,7 +271,6 @@ for set_dict in sims:
 
     arm_weld_id = mj.mj_name2id(model, mj.mjtObj.mjOBJ_EQUALITY,"EE_arm_weld" )
     ee_body_id = mj.mj_name2id(model,mj.mjtObj.mjOBJ_BODY, 'interface_attachment_body')
-    interface_k = model.jnt_stiffness[n_controllable_joints:n_controllable_joints]
 
     n_human_dof = data.ctrl.shape[0] - n_controllable_joints 
     human_u_min = model.actuator_ctrlrange[-n_human_dof:,0]
@@ -364,11 +357,6 @@ for set_dict in sims:
                         ki=human_control_gains['ki'],
                         dt = dt)
     
-    human_stiffness_controller = PID(n_outputs=n_human_dof,
-                        kp=human_control_gains['kp'],
-                        kd=human_control_gains['kd'],
-                        ki=human_control_gains['ki'],
-                        dt = dt)
 
     ###### TRAJECTORY PLANNING ######
 
@@ -596,10 +584,6 @@ for set_dict in sims:
         
         if r'data' in HUMAN_TRAJECTORY:
             human_u = loaded_human_u[step,:]
-            if human_stiffness:
-                stiffness_contribution = human_stiffness_controller.calculate(human_joint_angles,human_pos_desired[step,:])
-                human_u += stiffness_contribution
-                human_u = np.clip(human_u,human_u_min,human_u_max)
 
         # APPLY CONTROL
         if filter_torques: u = lp_torque.update(u)
